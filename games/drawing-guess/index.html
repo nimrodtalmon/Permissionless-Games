@@ -8,13 +8,13 @@
   <link rel="stylesheet" href="../../lib/base.css">
   <link rel="stylesheet" href="../../lib/components.css">
   <link rel="stylesheet" href="style.css">
-  <!-- QRCode library loaded as a global before the ES module so share.js can use it -->
   <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
 </head>
 <body>
   <header class="game-header">
     <a class="back-link" href="../../">← Games</a>
     <div class="game-title">🎨 Drawing Guess</div>
+    <span id="round-number" class="round-number"></span>
     <div id="share-container"></div>
   </header>
 
@@ -23,15 +23,7 @@
 
     <section class="puzzle-section">
       <div id="clue-emoji" class="clue-emoji" aria-label="Emoji clue">🤔</div>
-
-      <div class="hangman-row">
-        <span id="hangman-face" class="hangman-face">😊</span>
-        <span class="hangman-label">Wrong:</span>
-        <span id="wrong-count" class="wrong-count">0 / 6</span>
-      </div>
-
       <div id="word-blanks" class="word-blanks"></div>
-
       <div id="game-status" class="game-status"></div>
     </section>
 

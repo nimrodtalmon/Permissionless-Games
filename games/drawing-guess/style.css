@@ -25,14 +25,19 @@ body {
   transition: color 0.15s;
 }
 
-.back-link:hover {
-  color: var(--color-primary);
-}
+.back-link:hover { color: var(--color-primary); }
 
 .game-title {
   font-weight: 700;
   font-size: 1.05rem;
   flex: 1;
+}
+
+.round-number {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
 /* ── Main layout ─────────────────────────────────────────────────────────── */
@@ -67,32 +72,7 @@ body {
   user-select: none;
 }
 
-.clue-emoji:hover {
-  transform: scale(1.06);
-}
-
-.hangman-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.hangman-face {
-  font-size: 2rem;
-  line-height: 1;
-  transition: all 0.3s ease;
-}
-
-.hangman-label {
-  color: var(--color-text-muted);
-}
-
-.wrong-count {
-  font-weight: 700;
-  font-size: 1rem;
-  transition: color 0.4s ease;
-}
+.clue-emoji:hover { transform: scale(1.06); }
 
 /* ── Word blanks ─────────────────────────────────────────────────────────── */
 .word-blanks {
@@ -111,15 +91,17 @@ body {
   height: 48px;
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-border);
   font-family: var(--font-mono);
   text-transform: uppercase;
   border-bottom: 3px solid var(--color-border);
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, color 0.2s;
 }
 
+/* Letter and underline both take the guesser's color */
 .blank.revealed {
-  border-bottom-color: var(--color-primary);
+  color: var(--gc, var(--color-primary));
+  border-bottom-color: var(--gc, var(--color-primary));
   animation: pop-in 0.25s ease-out;
 }
 
@@ -135,11 +117,20 @@ body {
   font-size: 0.95rem;
   text-align: center;
   min-height: 1.4em;
-  transition: opacity 0.3s;
 }
 
-.game-status.win  { color: var(--color-success); }
-.game-status.lose { color: var(--color-danger); }
+.game-status.win { color: var(--color-success); }
+
+/* ── Player score badge inside chip ─────────────────────────────────────── */
+.player-score {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 11px;
+  margin-left: 5px;
+  font-weight: 700;
+}
 
 /* ── On-screen keyboard ──────────────────────────────────────────────────── */
 .keyboard {
@@ -150,6 +141,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  touch-action: manipulation; /* prevents double-tap zoom on mobile */
+  user-select: none;
 }
 
 .key-row {
@@ -168,6 +161,7 @@ body {
   font-weight: 700;
   color: var(--color-text);
   transition: background 0.1s, color 0.1s, transform 0.08s, border-color 0.1s;
+  touch-action: manipulation;
 }
 
 .key:not(:disabled):hover {
@@ -177,9 +171,7 @@ body {
   transform: translateY(-2px);
 }
 
-.key:not(:disabled):active {
-  transform: translateY(0);
-}
+.key:not(:disabled):active { transform: translateY(0); }
 
 .key.correct {
   background: var(--color-success);
@@ -188,19 +180,16 @@ body {
 }
 
 .key.wrong {
-  background: var(--color-danger);
-  color: white;
-  border-color: var(--color-danger);
-  opacity: 0.75;
+  background: #ccc;
+  color: #888;
+  border-color: #bbb;
 }
 
-.key:disabled {
-  cursor: default;
-}
+.key:disabled { cursor: default; }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 420px) {
   .clue-emoji { font-size: 4rem; }
-  .key { width: 29px; height: 40px; font-size: 11px; }
+  .key { width: 30px; height: 42px; font-size: 12px; }
   .blank { width: 30px; font-size: 1.1rem; }
 }

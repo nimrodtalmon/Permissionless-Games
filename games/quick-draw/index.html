@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Draw — Permissionless Games</title>
+  <meta name="description" content="A word appears — everyone draws it in 60 seconds. Then vote on each other's drawings.">
+  <link rel="stylesheet" href="../../lib/base.css">
+  <link rel="stylesheet" href="../../lib/components.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+</head>
+<body>
+  <header class="game-header">
+    <a class="back-link" href="../../">← Games</a>
+    <div class="game-title">✏️ Quick Draw</div>
+    <span id="round-number" class="round-number"></span>
+    <div id="share-container"></div>
+  </header>
+
+  <!-- Drawing phase -->
+  <section id="drawing-phase" class="phase hidden">
+    <div class="word-banner">
+      <span id="draw-word-emoji" class="word-emoji">🤔</span>
+      <span id="draw-word-text" class="word-text">Loading…</span>
+      <span id="draw-timer" class="timer">60</span>
+    </div>
+
+    <div id="player-list-draw" class="player-list phase-players"></div>
+
+    <div class="canvas-wrap">
+      <canvas id="draw-canvas"></canvas>
+    </div>
+
+    <div class="canvas-tools">
+      <div class="stroke-sizes">
+        <button class="size-btn active" data-size="3" title="Thin">●</button>
+        <button class="size-btn" data-size="7" title="Medium">●</button>
+        <button class="size-btn" data-size="14" title="Thick">●</button>
+      </div>
+      <button id="undo-btn" class="tool-btn">↩ Undo</button>
+      <button id="clear-btn" class="tool-btn">🗑 Clear</button>
+    </div>
+
+    <div class="thumbnails-section">
+      <p class="thumbnails-label">Others drawing:</p>
+      <div id="thumbnails" class="thumbnails"></div>
+    </div>
+  </section>
+
+  <!-- Gallery phase -->
+  <section id="gallery-phase" class="phase hidden">
+    <div class="gallery-header">
+      <div class="word-banner">
+        <span id="gallery-word-emoji" class="word-emoji">🤔</span>
+        <span id="gallery-word-text" class="word-text"></span>
+      </div>
+      <div class="gallery-timer-wrap">
+        <span class="gallery-timer-label">Next round in</span>
+        <span id="gallery-timer" class="timer">20</span>
+      </div>
+    </div>
+
+    <div id="player-list-gallery" class="player-list phase-players"></div>
+
+    <div id="drawings-grid" class="drawings-grid"></div>
+  </section>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>
