@@ -11,6 +11,7 @@ const player = getPlayer();
 const roomId = getRoomId();
 let puzzle = null;
 let nextRoundTimer = null;
+let countdownInterval = null;
 let currentPlayers = [];
 let currentScores = {};
 
@@ -57,12 +58,14 @@ async function startRound(n) {
 
 function onPuzzleUpdate(data) {
   if (!data) return;
+
+  const isNewRound = puzzle && data.roundNumber !== puzzle.roundNumber;
   puzzle = data;
 
   const guessedLetters = data.guessedLetters || {};
   const guessed = new Set(Object.keys(guessedLetters));
 
-  // Any client detects the win and writes solvedAt — idempotent
+  // Any client detects win and writes solvedAt — idempotent
   if (!data.solvedAt) {
     const uniqueLetters = [...new Set(data.word.split(''))];
     if (uniqueLetters.every(l => guessed.has(l))) {
@@ -70,14 +73,52 @@ function onPuzzleUpdate(data) {
     }
   }
 
-  // Use elapsed time so late-joining players schedule correctly and never get stuck
+  // Robust schedule: uses elapsed time so late-joiners are never stuck
   clearTimeout(nextRoundTimer);
   if (data.solvedAt) {
     const remaining = Math.max(0, NEXT_ROUND_DELAY - (Date.now() - data.solvedAt));
     nextRoundTimer = setTimeout(() => startRound(data.roundNumber + 1), remaining);
+    showWinOverlay(data, guessedLetters);
+  } else {
+    if (isNewRound) hideWinOverlay();
+    renderAll(data, guessedLetters, guessed);
   }
 
-  renderAll(data, guessedLetters, guessed);
+  // Always keep the keyboard / blanks current even while overlay is visible
+  if (!data.solvedAt) renderAll(data, guessedLetters, guessed);
+}
+
+// ─── Win overlay ──────────────────────────────────────────────────────────────
+
+function showWinOverlay(data, guessedLetters) {
+  const overlay = document.getElementById('win-overlay');
+  overlay.classList.remove('hidden');
+
+  document.getElementById('win-word').textContent = `${data.emoji}  ${data.word}`;
+
+  document.getElementById('win-blanks').innerHTML = data.word
+    .split('')
+    .map(l => {
+      const g = guessedLetters[l];
+      const gc = g ? g.color : 'var(--color-primary)';
+      const title = g ? g.name : '';
+      return `<span class="blank revealed" style="--gc:${gc}" title="${title}">${l}</span>`;
+    })
+    .join('');
+
+  clearInterval(countdownInterval);
+  function tick() {
+    const secs = Math.ceil(Math.max(0, NEXT_ROUND_DELAY - (Date.now() - data.solvedAt)) / 1000);
+    document.getElementById('win-countdown').textContent = secs;
+    if (secs <= 0) clearInterval(countdownInterval);
+  }
+  tick();
+  countdownInterval = setInterval(tick, 250);
+}
+
+function hideWinOverlay() {
+  clearInterval(countdownInterval);
+  document.getElementById('win-overlay').classList.add('hidden');
 }
 
 // ─── Rendering ───────────────────────────────────────────────────────────────
@@ -86,7 +127,6 @@ function renderAll(data, guessedLetters, guessed) {
   document.getElementById('clue-emoji').textContent = data.emoji;
   document.getElementById('round-number').textContent = `Round ${data.roundNumber + 1}`;
   renderBlanks(data.word, guessedLetters);
-  renderStatus(data);
   refreshKeyboard(data.word, guessed, !!data.solvedAt);
 }
 
@@ -95,24 +135,10 @@ function renderBlanks(word, guessedLetters) {
     .split('')
     .map(l => {
       const g = guessedLetters[l];
-      if (g) {
-        // Letter shows in the guesser's color; tooltip shows who guessed it
-        return `<span class="blank revealed" style="--gc:${g.color}" title="${g.name}">${l}</span>`;
-      }
+      if (g) return `<span class="blank revealed" style="--gc:${g.color}" title="${g.name}">${l}</span>`;
       return `<span class="blank"></span>`;
     })
     .join('');
-}
-
-function renderStatus(data) {
-  const el = document.getElementById('game-status');
-  if (data.solvedAt) {
-    el.textContent = `🎉 "${data.word}" — next puzzle soon…`;
-    el.className = 'game-status win';
-  } else {
-    el.textContent = '';
-    el.className = 'game-status';
-  }
 }
 
 function renderPlayers() {

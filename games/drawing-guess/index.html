@@ -30,6 +30,16 @@
     <div id="keyboard" class="keyboard"></div>
   </main>
 
+  <!-- Shown for 5s when the word is solved; sits on top of the game -->
+  <div id="win-overlay" class="win-overlay hidden">
+    <div class="win-card">
+      <div class="win-stars">🎉 🎊 🎉</div>
+      <div id="win-word" class="win-word"></div>
+      <div id="win-blanks" class="word-blanks win-blanks"></div>
+      <p class="win-next">Next puzzle in <span id="win-countdown">5</span>s</p>
+    </div>
+  </div>
+
   <script type="module" src="game.js"></script>
 </body>
 </html>

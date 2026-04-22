@@ -11,6 +11,8 @@ const GALLERY_SECS = 20;
 const player = getPlayer();
 const roomId = getRoomId();
 
+const PALETTE = ['#1a1a1a', '#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6', '#ffffff', '#795548', '#607d8b'];
+
 let round = null;
 let allDrawings = {};   // { playerId: { strokeId: {points, color, width} } }
 let allPlayers = [];
@@ -18,6 +20,7 @@ let strokeHistory = []; // own stroke IDs, for undo
 let isDrawing = false;
 let currentStroke = [];
 let strokeWidth = 3;
+let penColor = player.color; // starts as player's identity color
 let timerInterval = null;
 let currentPhase = null;
 let drawCanvas, drawCtx;
@@ -140,6 +143,8 @@ function setupCanvas() {
   document.getElementById('undo-btn').addEventListener('click', undoStroke);
   document.getElementById('clear-btn').addEventListener('click', clearDrawing);
 
+  buildColorPalette();
+
   document.querySelectorAll('.size-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
@@ -150,6 +155,27 @@ function setupCanvas() {
 
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
+}
+
+function buildColorPalette() {
+  const palette = document.getElementById('color-palette');
+  // Player's own color first, then fixed palette
+  const colors = [player.color, ...PALETTE];
+  colors.forEach(color => {
+    const btn = document.createElement('button');
+    btn.className = 'color-swatch' + (color === penColor ? ' active' : '');
+    btn.style.background = color;
+    btn.title = color === player.color ? 'Your color' : color;
+    btn.dataset.color = color;
+    // White swatch needs a border to be visible
+    if (color === '#ffffff') btn.style.border = '2px solid #ccc';
+    btn.addEventListener('click', () => {
+      penColor = color;
+      palette.querySelectorAll('.color-swatch').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    palette.appendChild(btn);
+  });
 }
 
 function resizeCanvas() {
@@ -188,7 +214,7 @@ function onPointerMove(e) {
   const pos = getPos(e);
   currentStroke.push(pos);
   drawCtx.lineTo(pos.x * drawCanvas.width, pos.y * drawCanvas.height);
-  drawCtx.strokeStyle = player.color;
+  drawCtx.strokeStyle = penColor;
   drawCtx.lineWidth = strokeWidth;
   drawCtx.lineCap = 'round';
   drawCtx.lineJoin = 'round';
@@ -205,7 +231,7 @@ async function onPointerUp(e) {
 
   await sync.setState(GAME_TYPE, roomId, `drawings/${player.id}/${strokeId}`, {
     points: currentStroke,
-    color: player.color,
+    color: penColor,
     width: strokeWidth,
   });
   currentStroke = [];

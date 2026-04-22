@@ -117,6 +117,34 @@ body {
   flex-wrap: wrap;
 }
 
+/* ── Color palette ───────────────────────────────────────────────────────── */
+.color-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+  padding: 0;
+}
+
+.color-swatch:hover { transform: scale(1.18); }
+
+.color-swatch.active {
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #5c6bc0;
+  transform: scale(1.18);
+}
+
 .stroke-sizes {
   display: flex;
   align-items: center;
