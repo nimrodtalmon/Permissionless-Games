@@ -1,0 +1,102 @@
+/* Player chips */
+.player-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  min-height: 28px;
+}
+
+.player-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.player-chip.is-me::after {
+  content: ' ✦';
+  opacity: 0.7;
+}
+
+/* Share widget */
+.share-widget {
+  position: relative;
+}
+
+.share-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.share-toggle:hover {
+  background: var(--color-primary-dark);
+}
+
+.share-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+  min-width: 200px;
+  border: 1px solid var(--color-border);
+}
+
+.share-panel.hidden {
+  display: none;
+}
+
+.share-panel #share-qr canvas,
+.share-panel #share-qr img {
+  border-radius: 6px;
+  display: block;
+}
+
+.share-url {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  word-break: break-all;
+  text-align: center;
+  max-width: 180px;
+  line-height: 1.4;
+}
+
+.copy-link-btn {
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.copy-link-btn:hover {
+  background: var(--color-primary);
+  color: white;
+}

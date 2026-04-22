@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drawing Guess — Permissionless Games</title>
+  <meta name="description" content="Guess the hidden word from the emoji clue. Anyone can join mid-round, no account needed.">
+  <link rel="stylesheet" href="../../lib/base.css">
+  <link rel="stylesheet" href="../../lib/components.css">
+  <link rel="stylesheet" href="style.css">
+  <!-- QRCode library loaded as a global before the ES module so share.js can use it -->
+  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+</head>
+<body>
+  <header class="game-header">
+    <a class="back-link" href="../../">← Games</a>
+    <div class="game-title">🎨 Drawing Guess</div>
+    <div id="share-container"></div>
+  </header>
+
+  <main class="game-main">
+    <div id="player-list" class="player-list"></div>
+
+    <section class="puzzle-section">
+      <div id="clue-emoji" class="clue-emoji" aria-label="Emoji clue">🤔</div>
+
+      <div class="hangman-row">
+        <span id="hangman-face" class="hangman-face">😊</span>
+        <span class="hangman-label">Wrong:</span>
+        <span id="wrong-count" class="wrong-count">0 / 6</span>
+      </div>
+
+      <div id="word-blanks" class="word-blanks"></div>
+
+      <div id="game-status" class="game-status"></div>
+    </section>
+
+    <div id="keyboard" class="keyboard"></div>
+  </main>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>

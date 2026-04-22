@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "rooms": {
+      "$gameType": {
+        "$roomId": {
+          ".read": true,
+          ".write": true
+        }
+      }
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

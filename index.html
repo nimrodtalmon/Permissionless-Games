@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permissionless Games</title>
+  <meta name="description" content="Jump in. Play together. No accounts, no waiting. Games that work with any number of players.">
+  <link rel="stylesheet" href="lib/base.css">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <h1 class="site-title">🎮 Permissionless Games</h1>
+      <p class="site-tagline">Jump in. Play together. No accounts, no waiting.</p>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <div class="game-grid" id="game-grid"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Anyone can join, leave, or go idle — the game always keeps going.</p>
+  </footer>
+
+  <script type="module">
+    const GAMES = [
+      {
+        id: 'drawing-guess',
+        title: 'Drawing Guess',
+        tagline: 'An emoji hides a secret word. Guess the letters before you run out of chances — anyone can join mid-round.',
+        emoji: '🎨',
+        players: '1 – ∞',
+        path: 'games/drawing-guess/',
+      },
+    ];
+
+    const grid = document.getElementById('game-grid');
+    GAMES.forEach(game => {
+      const card = document.createElement('article');
+      card.className = 'game-card';
+      card.innerHTML = `
+        <div class="game-card-emoji" aria-hidden="true">${game.emoji}</div>
+        <h2 class="game-card-title">${game.title}</h2>
+        <p class="game-card-tagline">${game.tagline}</p>
+        <div class="game-card-footer">
+          <span class="game-card-players">👥 ${game.players} players</span>
+          <a class="play-btn" href="${game.path}">Play →</a>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
