@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quick Draw — Permissionless Games</title>
-  <meta name="description" content="A word appears — everyone draws it in 60 seconds. Then vote on each other's drawings.">
+  <meta name="description" content="One canvas, everyone draws on it together. A word appears — you have 60 seconds.">
   <link rel="stylesheet" href="../../lib/base.css">
   <link rel="stylesheet" href="../../lib/components.css">
   <link rel="stylesheet" href="style.css">
@@ -18,18 +18,18 @@
     <div id="share-container"></div>
   </header>
 
-  <!-- Drawing phase -->
-  <section id="drawing-phase" class="phase hidden">
+  <main class="game-main">
+    <div id="player-list" class="player-list"></div>
+
     <div class="word-banner">
-      <span id="draw-word-emoji" class="word-emoji">🤔</span>
-      <span id="draw-word-text" class="word-text">Loading…</span>
+      <span id="word-text" class="word-text">Loading…</span>
       <span id="draw-timer" class="timer">60</span>
     </div>
 
-    <div id="player-list-draw" class="player-list phase-players"></div>
-
-    <div class="canvas-wrap">
+    <!-- Two canvases stacked: draw-canvas holds synced strokes, live-canvas holds the in-progress stroke -->
+    <div id="canvas-wrap" class="canvas-wrap">
       <canvas id="draw-canvas"></canvas>
+      <canvas id="live-canvas"></canvas>
     </div>
 
     <div class="canvas-tools">
@@ -40,32 +40,18 @@
         <button class="size-btn" data-size="14" title="Thick">●</button>
       </div>
       <button id="undo-btn" class="tool-btn">↩ Undo</button>
-      <button id="clear-btn" class="tool-btn">🗑 Clear</button>
+      <button id="clear-btn" class="tool-btn">🗑 Mine</button>
     </div>
+  </main>
 
-    <div class="thumbnails-section">
-      <p class="thumbnails-label">Others drawing:</p>
-      <div id="thumbnails" class="thumbnails"></div>
+  <!-- Shown for 5s when drawing time ends -->
+  <div id="done-overlay" class="done-overlay hidden">
+    <div class="done-card">
+      <div class="done-stars">✏️ 🎨 ✏️</div>
+      <div id="done-word" class="done-word"></div>
+      <p class="done-next">Next word in <span id="done-countdown">5</span>s</p>
     </div>
-  </section>
-
-  <!-- Gallery phase -->
-  <section id="gallery-phase" class="phase hidden">
-    <div class="gallery-header">
-      <div class="word-banner">
-        <span id="gallery-word-emoji" class="word-emoji">🤔</span>
-        <span id="gallery-word-text" class="word-text"></span>
-      </div>
-      <div class="gallery-timer-wrap">
-        <span class="gallery-timer-label">Next round in</span>
-        <span id="gallery-timer" class="timer">20</span>
-      </div>
-    </div>
-
-    <div id="player-list-gallery" class="player-list phase-players"></div>
-
-    <div id="drawings-grid" class="drawings-grid"></div>
-  </section>
+  </div>
 
   <script type="module" src="game.js"></script>
 </body>
