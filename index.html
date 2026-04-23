@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Permissionless Games</title>
-  <meta name="description" content="Jump in. Play together. No accounts, no waiting. Games that work with any number of players.">
+  <meta name="description" content="Jump in. Play together. Anyone can join, leave, or go idle.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="lib/base.css">
   <link rel="stylesheet" href="index.css">
 </head>
@@ -12,24 +13,23 @@
   <header class="site-header">
     <div class="header-inner">
       <h1 class="site-title">🎮 Permissionless Games</h1>
-      <p class="site-tagline">Jump in. Play together. No accounts, no waiting.</p>
     </div>
   </header>
 
   <main class="site-main">
+    <div class="site-hero">
+      <p class="hero-line1">Jump in. Play together.</p>
+      <p class="hero-line2">Anyone can join, leave, or go idle.</p>
+    </div>
     <div class="game-grid" id="game-grid"></div>
   </main>
-
-  <footer class="site-footer">
-    <p>Anyone can join, leave, or go idle — the game always keeps going.</p>
-  </footer>
 
   <script type="module">
     const GAMES = [
       {
         id: 'drawing-guess',
         title: 'Drawing Guess',
-        tagline: 'An emoji hides a secret word. Guess the letters together — anyone can join mid-round.',
+        tagline: 'Emoji clue. Hidden word. Tap letters to reveal it together.',
         emoji: '🎨',
         players: '1 – ∞',
         path: 'games/drawing-guess/',
@@ -37,9 +37,9 @@
       {
         id: 'quick-draw',
         title: 'Quick Draw',
-        tagline: 'A word appears — everyone draws it in 60 seconds. Then vote on each other\'s masterpieces.',
+        tagline: 'Same word. 60 seconds. Everyone draws at once.',
         emoji: '✏️',
-        players: '2 – ∞',
+        players: '1 – ∞',
         path: 'games/quick-draw/',
       },
     ];

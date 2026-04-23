@@ -28,12 +28,12 @@ body {
 /* ── Main layout ─────────────────────────────────────────────────────────── */
 .game-main {
   flex: 1;
-  max-width: 640px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 16px 16px 32px;
+  padding: 12px 16px 24px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
 }
 
@@ -41,7 +41,7 @@ body {
 .word-banner {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
-  padding: 14px 20px;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -76,12 +76,10 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow-md);
   align-self: center;
-  /* size is driven by the JS-sized draw-canvas inside */
 }
 
 #draw-canvas { display: block; }
 
-/* live-canvas sits exactly on top of draw-canvas */
 #live-canvas {
   position: absolute;
   top: 0;
@@ -98,56 +96,35 @@ body {
   flex-wrap: wrap;
 }
 
-/* Color palette */
-.color-palette {
+/* Color wheel */
+.color-wheel-wrap {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: var(--color-surface);
   border-radius: var(--radius-sm);
   padding: 6px 10px;
   box-shadow: var(--shadow-sm);
 }
 
-.color-swatch {
-  width: 28px;
-  height: 28px;
+.color-wheel {
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  border: 2px solid transparent;
-  padding: 0;
-  cursor: pointer;
+  cursor: crosshair;
+  box-shadow: var(--shadow-sm);
   flex-shrink: 0;
-  transition: transform 0.12s, box-shadow 0.12s;
+  touch-action: none;
 }
 
-.color-swatch:hover { transform: scale(1.15); }
-
-.color-swatch.active {
-  box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-primary);
-  transform: scale(1.15);
-}
-
-/* Color input styled as a circular swatch that opens the OS color picker */
-.color-input {
+.color-preview {
   width: 28px;
   height: 28px;
   border-radius: 50%;
   border: 2px solid var(--color-border);
-  padding: 0;
-  cursor: pointer;
+  background: #1a1a1a;
   flex-shrink: 0;
-  overflow: hidden;
-  background: none;
-  transition: transform 0.12s, box-shadow 0.12s;
-}
-
-.color-input::-webkit-color-swatch-wrapper { padding: 0; }
-.color-input::-webkit-color-swatch { border: none; border-radius: 50%; }
-.color-input::-moz-color-swatch { border: none; border-radius: 50%; }
-.color-input:hover { transform: scale(1.15); }
-.color-input.active {
-  box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-primary);
-  transform: scale(1.15);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Stroke sizes */
@@ -257,4 +234,5 @@ body {
 @media (max-width: 480px) {
   .word-text { font-size: 1.2rem; }
   .timer { font-size: 1.5rem; }
+  .color-wheel { width: 56px; height: 56px; }
 }

@@ -10,8 +10,7 @@ const NEXT_ROUND_DELAY = 5000;
 const player = getPlayer();
 const roomId = getRoomId();
 let puzzle = null;
-let nextRoundTimer = null;
-let countdownInterval = null;
+let winInterval = null;
 let currentPlayers = [];
 let currentScores = {};
 
@@ -73,27 +72,18 @@ function onPuzzleUpdate(data) {
     }
   }
 
-  // Robust schedule: uses elapsed time so late-joiners are never stuck
-  clearTimeout(nextRoundTimer);
   if (data.solvedAt) {
-    const remaining = Math.max(0, NEXT_ROUND_DELAY - (Date.now() - data.solvedAt));
-    nextRoundTimer = setTimeout(() => startRound(data.roundNumber + 1), remaining);
     showWinOverlay(data, guessedLetters);
   } else {
     if (isNewRound) hideWinOverlay();
     renderAll(data, guessedLetters, guessed);
   }
-
-  // Always keep the keyboard / blanks current even while overlay is visible
-  if (!data.solvedAt) renderAll(data, guessedLetters, guessed);
 }
 
 // ─── Win overlay ──────────────────────────────────────────────────────────────
 
 function showWinOverlay(data, guessedLetters) {
-  const overlay = document.getElementById('win-overlay');
-  overlay.classList.remove('hidden');
-
+  document.getElementById('win-overlay').classList.remove('hidden');
   document.getElementById('win-word').textContent = `${data.emoji}  ${data.word}`;
 
   document.getElementById('win-blanks').innerHTML = data.word
@@ -106,18 +96,23 @@ function showWinOverlay(data, guessedLetters) {
     })
     .join('');
 
-  clearInterval(countdownInterval);
-  function tick() {
-    const secs = Math.ceil(Math.max(0, NEXT_ROUND_DELAY - (Date.now() - data.solvedAt)) / 1000);
-    document.getElementById('win-countdown').textContent = secs;
-    if (secs <= 0) clearInterval(countdownInterval);
-  }
-  tick();
-  countdownInterval = setInterval(tick, 250);
+  // Single interval drives both the countdown display and round advancement.
+  // Restarting on every call is safe — idempotent guard in startRound prevents double-writes.
+  clearInterval(winInterval);
+  winInterval = setInterval(() => {
+    const remaining = NEXT_ROUND_DELAY - (Date.now() - data.solvedAt);
+    document.getElementById('win-countdown').textContent = Math.ceil(Math.max(0, remaining) / 1000);
+    if (remaining <= 0) {
+      clearInterval(winInterval);
+      winInterval = null;
+      startRound(data.roundNumber + 1);
+    }
+  }, 250);
 }
 
 function hideWinOverlay() {
-  clearInterval(countdownInterval);
+  clearInterval(winInterval);
+  winInterval = null;
   document.getElementById('win-overlay').classList.add('hidden');
 }
 

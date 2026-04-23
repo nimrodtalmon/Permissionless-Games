@@ -7,7 +7,6 @@ import { getWordForRound } from '../../lib/words.js';
 const GAME_TYPE = 'quick-draw';
 const DRAW_SECS = 60;
 const DONE_SECS = 5;
-const BASIC_COLORS = ['#1a1a1a', '#e74c3c', '#3498db'];
 
 const player = getPlayer();
 const roomId = getRoomId();
@@ -15,7 +14,6 @@ const roomId = getRoomId();
 let round = null;
 let allPlayers = [];
 let cachedStrokes = {};
-// Strokes drawn locally but not yet confirmed by Firebase — kept visible during network round-trip
 let pendingLocalStrokes = {};
 let isDrawing = false;
 let currentStroke = [];
@@ -36,7 +34,7 @@ async function init() {
   liveCtx = liveCanvas.getContext('2d');
 
   setupCanvas();
-  buildColorPalette();
+  buildColorWheel();
 
   await sync.joinRoom(GAME_TYPE, roomId, player);
 
@@ -45,7 +43,6 @@ async function init() {
     renderPlayerList();
   });
 
-  // All players share one strokes path — incremental render keeps it smooth
   sync.onState(GAME_TYPE, roomId, 'strokes', onStrokesUpdate);
   sync.onState(GAME_TYPE, roomId, 'round', onRoundUpdate);
 
@@ -61,7 +58,6 @@ async function startRound(n) {
   const current = await sync.getState(GAME_TYPE, roomId, 'round');
   if (current && current.roundNumber >= n) return;
 
-  // Clear shared canvas before writing the new round
   await sync.setState(GAME_TYPE, roomId, 'strokes', null);
   const { word } = getWordForRound(roomId, n);
   await sync.setState(GAME_TYPE, roomId, 'round', {
@@ -124,7 +120,6 @@ function setPhase(phase) {
 // ─── Canvas ───────────────────────────────────────────────────────────────────
 
 function setupCanvas() {
-  // All pointer events go to live-canvas (the top layer)
   liveCanvas.addEventListener('pointerdown', onPointerDown);
   liveCanvas.addEventListener('pointermove', onPointerMove);
   liveCanvas.addEventListener('pointerup', onPointerUp);
@@ -148,7 +143,19 @@ function setupCanvas() {
 
 function resizeCanvas() {
   const wrap = document.getElementById('canvas-wrap');
-  const size = Math.min(wrap.clientWidth, Math.floor(window.innerHeight * 0.52));
+  // Use remaining vertical space after fixed UI elements
+  const header = document.querySelector('.game-header');
+  const wordBanner = document.querySelector('.word-banner');
+  const playerList = document.getElementById('player-list');
+  const tools = document.querySelector('.canvas-tools');
+  const usedH = (header?.offsetHeight || 50)
+    + (playerList?.offsetHeight || 0)
+    + (wordBanner?.offsetHeight || 58)
+    + (tools?.offsetHeight || 60)
+    + 14 * 4   // gaps
+    + 48;      // padding top+bottom
+  const availH = Math.max(200, window.innerHeight - usedH);
+  const size = Math.min(wrap.clientWidth, availH);
   if (drawCanvas.width === size) return;
   drawCanvas.width = liveCanvas.width = size;
   drawCanvas.height = liveCanvas.height = size;
@@ -168,7 +175,6 @@ function renderAllStrokes() {
 
 function onStrokesUpdate(strokes) {
   cachedStrokes = strokes || {};
-  // Once Firebase confirms a pending stroke, remove it from pending
   Object.keys(pendingLocalStrokes).forEach(id => {
     if (cachedStrokes[id]) delete pendingLocalStrokes[id];
   });
@@ -230,8 +236,6 @@ async function onPointerUp(e) {
   const strokeId = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
   const strokeData = { points: currentStroke, color: penColor, width: strokeWidth, playerId: player.id };
 
-  // Optimistic: add to pending and re-render immediately so the stroke
-  // stays visible while waiting for Firebase to confirm it
   pendingLocalStrokes[strokeId] = strokeData;
   renderAllStrokes();
 
@@ -242,7 +246,7 @@ async function onPointerUp(e) {
 async function undoStroke() {
   const myStrokes = Object.entries(cachedStrokes)
     .filter(([, s]) => s?.playerId === player.id)
-    .sort(([a], [b]) => (a < b ? 1 : -1)); // stroke IDs are time-prefixed
+    .sort(([a], [b]) => (a < b ? 1 : -1));
   if (!myStrokes.length) return;
 
   const [lastId] = myStrokes[0];
@@ -265,36 +269,59 @@ async function clearMyStrokes() {
   await sync.updateState(GAME_TYPE, roomId, 'strokes', updates);
 }
 
-// ─── Color palette ────────────────────────────────────────────────────────────
+// ─── Color wheel ──────────────────────────────────────────────────────────────
 
-function buildColorPalette() {
-  const palette = document.getElementById('color-palette');
+function buildColorWheel() {
+  const canvas = document.getElementById('color-wheel');
+  const ctx = canvas.getContext('2d');
+  const size = canvas.width;
+  const cx = size / 2, cy = size / 2, r = size / 2;
 
-  BASIC_COLORS.forEach(color => {
-    const btn = document.createElement('button');
-    btn.className = 'color-swatch' + (color === penColor ? ' active' : '');
-    btn.style.background = color;
-    btn.title = color;
-    btn.addEventListener('click', () => selectColor(color, btn));
-    palette.appendChild(btn);
-  });
+  // Draw HSL wheel: hue from angle, saturation from distance
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const dx = x - cx, dy = y - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > r) continue;
+      const hue = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+      const sat = (dist / r) * 100;
+      ctx.fillStyle = `hsl(${hue},${sat}%,50%)`;
+      ctx.fillRect(x, y, 1, 1);
+    }
+  }
 
-  // Fine-grained color picker — the "sphere"
-  const input = document.createElement('input');
-  input.type = 'color';
-  input.id = 'color-input';
-  input.className = 'color-input';
-  input.value = '#9b59b6';
-  input.title = 'Custom color';
-  input.addEventListener('input', () => selectColor(input.value, input));
-  palette.appendChild(input);
+  // Draw white center dot for low-saturation access
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+
+  canvas.addEventListener('pointerdown', onWheelPick);
+  canvas.addEventListener('pointermove', e => { if (e.buttons) onWheelPick(e); });
+
+  updateColorPreview();
 }
 
-function selectColor(color, sourceEl) {
-  penColor = color;
-  document.querySelectorAll('.color-swatch').forEach(b => b.classList.remove('active'));
-  document.getElementById('color-input')?.classList.remove('active');
-  sourceEl.classList.add('active');
+function onWheelPick(e) {
+  e.preventDefault();
+  const canvas = document.getElementById('color-wheel');
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top) * scaleY;
+  const cx = canvas.width / 2, cy = canvas.height / 2;
+  const dx = x - cx, dy = y - cy;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist > cx) return;
+  const hue = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+  const sat = Math.min(100, (dist / cx) * 100);
+  penColor = `hsl(${hue.toFixed(1)},${sat.toFixed(1)}%,50%)`;
+  updateColorPreview();
+}
+
+function updateColorPreview() {
+  document.getElementById('color-preview').style.background = penColor;
 }
 
 // ─── Done overlay ─────────────────────────────────────────────────────────────

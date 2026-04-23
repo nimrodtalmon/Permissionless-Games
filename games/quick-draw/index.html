@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quick Draw — Permissionless Games</title>
   <meta name="description" content="One canvas, everyone draws on it together. A word appears — you have 60 seconds.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../../lib/base.css">
   <link rel="stylesheet" href="../../lib/components.css">
   <link rel="stylesheet" href="style.css">
@@ -33,7 +34,10 @@
     </div>
 
     <div class="canvas-tools">
-      <div id="color-palette" class="color-palette"></div>
+      <div class="color-wheel-wrap">
+        <canvas id="color-wheel" class="color-wheel" width="100" height="100"></canvas>
+        <div id="color-preview" class="color-preview"></div>
+      </div>
       <div class="stroke-sizes">
         <button class="size-btn active" data-size="3" title="Thin">●</button>
         <button class="size-btn" data-size="7" title="Medium">●</button>
