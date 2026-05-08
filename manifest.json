@@ -1,0 +1,17 @@
+{
+  "name": "Permissionless Games",
+  "short_name": "PGames",
+  "description": "Jump in. Play together.",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#3949ab",
+  "theme_color": "#5c6bc0"
+}

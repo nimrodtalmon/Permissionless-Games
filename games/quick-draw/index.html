@@ -6,6 +6,11 @@
   <title>Quick Draw — Permissionless Games</title>
   <meta name="description" content="One canvas, everyone draws on it together. A word appears — you have 60 seconds.">
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.json">
+  <meta name="theme-color" content="#5c6bc0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="stylesheet" href="../../lib/base.css">
   <link rel="stylesheet" href="../../lib/components.css">
   <link rel="stylesheet" href="style.css">
@@ -27,24 +32,23 @@
       <span id="draw-timer" class="timer">60</span>
     </div>
 
-    <!-- Two canvases stacked: draw-canvas holds synced strokes, live-canvas holds the in-progress stroke -->
+    <!-- canvas-wrap fills remaining space; tools float over it -->
     <div id="canvas-wrap" class="canvas-wrap">
       <canvas id="draw-canvas"></canvas>
       <canvas id="live-canvas"></canvas>
-    </div>
-
-    <div class="canvas-tools">
-      <div class="color-wheel-wrap">
-        <canvas id="color-wheel" class="color-wheel" width="100" height="100"></canvas>
-        <div id="color-preview" class="color-preview"></div>
+      <div class="canvas-tools">
+        <div class="color-wheel-wrap">
+          <canvas id="color-wheel" class="color-wheel" width="80" height="80"></canvas>
+          <div id="color-preview" class="color-preview"></div>
+        </div>
+        <div class="stroke-sizes">
+          <button class="size-btn active" data-size="3" title="Thin">●</button>
+          <button class="size-btn" data-size="7" title="Medium">●</button>
+          <button class="size-btn" data-size="14" title="Thick">●</button>
+        </div>
+        <button id="undo-btn" class="tool-btn">↩</button>
+        <button id="clear-btn" class="tool-btn">🗑</button>
       </div>
-      <div class="stroke-sizes">
-        <button class="size-btn active" data-size="3" title="Thin">●</button>
-        <button class="size-btn" data-size="7" title="Medium">●</button>
-        <button class="size-btn" data-size="14" title="Thick">●</button>
-      </div>
-      <button id="undo-btn" class="tool-btn">↩ Undo</button>
-      <button id="clear-btn" class="tool-btn">🗑 Mine</button>
     </div>
   </main>
 

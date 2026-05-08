@@ -143,22 +143,12 @@ function setupCanvas() {
 
 function resizeCanvas() {
   const wrap = document.getElementById('canvas-wrap');
-  // Use remaining vertical space after fixed UI elements
-  const header = document.querySelector('.game-header');
-  const wordBanner = document.querySelector('.word-banner');
-  const playerList = document.getElementById('player-list');
-  const tools = document.querySelector('.canvas-tools');
-  const usedH = (header?.offsetHeight || 50)
-    + (playerList?.offsetHeight || 0)
-    + (wordBanner?.offsetHeight || 58)
-    + (tools?.offsetHeight || 60)
-    + 14 * 4   // gaps
-    + 48;      // padding top+bottom
-  const availH = Math.max(200, window.innerHeight - usedH);
-  const size = Math.min(wrap.clientWidth, availH);
-  if (drawCanvas.width === size) return;
-  drawCanvas.width = liveCanvas.width = size;
-  drawCanvas.height = liveCanvas.height = size;
+  const w = wrap.clientWidth;
+  const h = wrap.clientHeight;
+  if (!w || !h) return;
+  if (drawCanvas.width === w && drawCanvas.height === h) return;
+  drawCanvas.width = liveCanvas.width = w;
+  drawCanvas.height = liveCanvas.height = h;
   renderAllStrokes();
 }
 
@@ -273,6 +263,7 @@ async function clearMyStrokes() {
 
 function buildColorWheel() {
   const canvas = document.getElementById('color-wheel');
+  canvas.width = canvas.height = 80;
   const ctx = canvas.getContext('2d');
   const size = canvas.width;
   const cx = size / 2, cy = size / 2, r = size / 2;
