@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mind Meld — Permissionless Games</title>
+  <meta name="description" content="A word appears. Type your first association. If someone else thought the same thing, you both score.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.json">
+  <meta name="theme-color" content="#5c6bc0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="../../lib/base.css">
+  <link rel="stylesheet" href="../../lib/components.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+</head>
+<body>
+  <header class="game-header">
+    <a class="back-link" href="../../">← Games</a>
+    <div class="game-title">🧠 Mind Meld</div>
+    <span id="round-number" class="round-number"></span>
+    <div id="share-container"></div>
+  </header>
+
+  <main class="game-main">
+    <div id="player-list" class="player-list"></div>
+
+    <div class="word-card">
+      <p class="seed-label">What's the first word that comes to mind?</p>
+      <h2 id="seed-word" class="seed-word">…</h2>
+      <div class="timer-row">
+        <div class="timer-bar-wrap">
+          <div id="timer-bar" class="timer-bar"></div>
+        </div>
+        <span id="mm-timer" class="mm-timer">12</span>
+      </div>
+    </div>
+
+    <div id="input-section" class="input-section">
+      <div class="input-row">
+        <input id="answer-input" class="answer-input"
+          type="text" placeholder="your word…" maxlength="30"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button id="submit-btn" class="submit-btn">→</button>
+      </div>
+      <p id="input-status" class="input-status"></p>
+    </div>
+
+    <div id="reveal-section" class="reveal-section hidden">
+      <div id="entries-list" class="entries-list"></div>
+    </div>
+  </main>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>
