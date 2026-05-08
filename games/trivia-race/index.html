@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trivia Race — Permissionless Games</title>
+  <meta name="description" content="Race to answer trivia questions. First to tap the right answer scores. Jump in anytime.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.json">
+  <meta name="theme-color" content="#5c6bc0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="../../lib/base.css">
+  <link rel="stylesheet" href="../../lib/components.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+</head>
+<body>
+  <header class="game-header">
+    <a class="back-link" href="../../">← Games</a>
+    <div class="game-title">🧠 Trivia Race</div>
+    <span id="q-number" class="round-number"></span>
+    <div id="share-container"></div>
+  </header>
+
+  <main class="game-main">
+    <div id="player-list" class="player-list"></div>
+
+    <div class="question-card">
+      <div class="q-meta">
+        <div class="timer-bar-wrap">
+          <div id="timer-bar" class="timer-bar"></div>
+        </div>
+        <span id="q-timer" class="q-timer">15</span>
+      </div>
+      <p id="question-text" class="question-text">Loading…</p>
+      <p id="result-info" class="result-info hidden"></p>
+    </div>
+
+    <div id="answers-grid" class="answers-grid">
+      <button class="answer-btn" data-index="0">
+        <span class="answer-label">A</span>
+        <span class="answer-text"></span>
+      </button>
+      <button class="answer-btn" data-index="1">
+        <span class="answer-label">B</span>
+        <span class="answer-text"></span>
+      </button>
+      <button class="answer-btn" data-index="2">
+        <span class="answer-label">C</span>
+        <span class="answer-text"></span>
+      </button>
+      <button class="answer-btn" data-index="3">
+        <span class="answer-label">D</span>
+        <span class="answer-text"></span>
+      </button>
+    </div>
+  </main>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>

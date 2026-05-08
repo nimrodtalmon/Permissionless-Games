@@ -1,0 +1,162 @@
+body {
+  background: var(--color-bg);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.game-header {
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.back-link { color: var(--color-text-muted); font-size: 14px; white-space: nowrap; transition: color 0.15s; }
+.back-link:hover { color: var(--color-primary); }
+.game-title { font-weight: 700; font-size: 1.05rem; flex: 1; }
+.round-number { font-size: 12px; font-weight: 600; color: var(--color-text-muted); white-space: nowrap; }
+
+/* ── Main layout ─────────────────────────────────────────────────────────── */
+.game-main {
+  flex: 1;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+/* ── Question card ───────────────────────────────────────────────────────── */
+.question-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px 18px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.q-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.timer-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.timer-bar {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 999px;
+  transition: width 0.1s linear, background 0.3s;
+  width: 100%;
+}
+
+.q-timer {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+  text-align: right;
+  transition: color 0.3s;
+}
+
+.q-timer.urgent { color: var(--color-danger); }
+.timer-bar.urgent { background: var(--color-danger); }
+
+.question-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.result-info {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  min-height: 1.4em;
+  animation: fade-in 0.2s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Answer grid ─────────────────────────────────────────────────────────── */
+.answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.answer-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  min-height: 72px;
+  transition: transform 0.1s, opacity 0.2s, filter 0.2s;
+  box-shadow: var(--shadow-sm);
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+/* Base colors per button index */
+.answer-btn[data-index="0"] { background: #3b82f6; }
+.answer-btn[data-index="1"] { background: #a855f7; }
+.answer-btn[data-index="2"] { background: #f97316; }
+.answer-btn[data-index="3"] { background: #22c55e; }
+
+.answer-btn:not(:disabled):hover { transform: translateY(-2px); filter: brightness(1.08); }
+.answer-btn:not(:disabled):active { transform: translateY(0); }
+
+/* State overrides */
+.answer-btn[data-state="correct"] { background: #16a34a !important; box-shadow: 0 0 0 3px #bbf7d0, var(--shadow-sm); }
+.answer-btn[data-state="wrong"]   { background: #dc2626 !important; box-shadow: 0 0 0 3px #fecaca, var(--shadow-sm); }
+.answer-btn[data-state="dim"]     { opacity: 0.3; }
+.answer-btn[data-state="selected"] { box-shadow: 0 0 0 3px white, 0 0 0 5px var(--color-primary); }
+
+.answer-label {
+  font-size: 1.1rem;
+  font-weight: 800;
+  opacity: 0.75;
+  flex-shrink: 0;
+  width: 1.4em;
+}
+
+.answer-text {
+  flex: 1;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .answers-grid { grid-template-columns: 1fr; }
+  .question-text { font-size: 1.1rem; }
+  .answer-btn { min-height: 60px; }
+}
